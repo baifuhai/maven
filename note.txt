@@ -112,3 +112,11 @@
 5. 相同版本依赖的选择，就近原则，一样近的，以上面的为准
 6. 父项目 install 会把子项目都 install，不用子项目一个一个 install
 7. idea 的 maven 面板里的 lifecycle 包下执行某个都会从生命周期的头开始执行，而 plugins 包下可以单独执行生命周期中的某一个环节
+8. jar包和源码一起下
+	<dependency>
+		<classifier>sources</classifier>
+	</dependency>
+9. 该依赖不传递，也不参与打包，那和 provided 有什么区别呢
+	<dependency>
+		<optional>true</optional>
+	</dependency>
