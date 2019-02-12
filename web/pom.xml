@@ -1,0 +1,74 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>com.test</groupId>
+		<artifactId>maven</artifactId>
+		<version>0.0.1</version>
+		<relativePath>../pom.xml</relativePath>
+	</parent>
+
+	<artifactId>web</artifactId>
+	<packaging>war</packaging>
+
+	<dependencies>
+
+		<dependency>
+			<groupId>com.test</groupId>
+			<artifactId>module-a</artifactId>
+			<version>0.0.1</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.test</groupId>
+			<artifactId>module-b</artifactId>
+			<version>0.0.1</version>
+		</dependency>
+
+	</dependencies>
+
+	<!-- 配置当前工程构建过程中的特殊设置 -->
+	<build>
+		<finalName>web</finalName>
+		<!-- 配置构建过程中需要使用的插件 -->
+		<plugins>
+			<plugin>
+				<!-- cargo是一家专门从事“启动Servlet容器”的组织 -->
+				<groupId>org.codehaus.cargo</groupId>
+				<artifactId>cargo-maven2-plugin</artifactId>
+				<version>1.2.3</version>
+				<!-- 插件配置 -->
+				<configuration>
+					<!-- 配置当前系统中容器的位置 -->
+					<container>
+						<containerId>tomcat8x</containerId>
+						<home>D:\dev\apache-tomcat-8.0.50</home>
+					</container>
+					<configuration>
+						<type>existing</type>
+						<home>D:\dev\apache-tomcat-8.0.50</home>
+						<!-- 如果Tomcat端口为8080则不用设置 -->
+						<properties>
+							<cargo.servlet.port>8080</cargo.servlet.port>
+						</properties>
+					</configuration>
+				</configuration>
+
+				<!-- 配置插件在什么情况下执行 -->
+				<executions>
+					<execution>
+						<id>cargo-run</id>
+						<!-- 生命周期的阶段 -->
+						<phase>install</phase>
+						<goals>
+							<!-- 插件的目标 -->
+							<goal>run</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+
+</project>

@@ -1,0 +1,114 @@
+[Why]:
+1. 一个项目分成多个工程
+2. 不用手动拷贝jar包，及其依赖的其他jar包
+
+[What]:
+1. 自动化构建工具
+	Maven 是目前最流行的自动化构建工具，对于生产环境下多框架、多模块整合开发有重要作用
+	Maven 是一款在大型项目开发过程中不可或缺的重要工具
+	Make->Ant->Maven->Gradle
+
+2. 构建
+	清理：将以前编译得到的旧的class文件删除，为下一步编译做准备
+	编译：将Java源程序编译成class文件
+	测试：自动测试，自动调用junit程序
+	报告：测试结果
+	打包：Web工程打war包，Java工程打jar包
+	安装：将打包后的文件复制到本地仓库
+	部署：将war包复制到servlet容器指定目录下
+
+3. 环境变量
+	MAVEN_HOME / M2_HOME
+
+4. 核心概念
+	1. 约定的目录结构
+		src
+			main
+				java
+				resources
+				webapp
+			test
+				java
+				resources
+		target
+		pom.xml
+
+	2. POM
+		POM: Project Object Model 项目对象模型
+		DOM: Document Object Model 文档对象模型
+
+	3. 坐标
+        使用groupId、artifactId、version确定一个依赖
+
+	4. 依赖
+		1. 依赖的范围
+						主程序	测试程序		参与打包
+			1. compile	1		1			1		（default）
+			2. test		0		1			0		（例如junit）
+			3. provided	1		1			0		（开发时编译用，不参与打包，运行时服务器有提供，例如servlet-api）
+
+		2. 依赖的传递性
+			1. a依赖b, b依赖c, c依赖spring-core，那么a和b都有spring-core
+			2. 非compile依赖不能传递
+
+		3. 依赖的排除
+			<exclusions>
+
+		4. 其他
+			a依赖b, b依赖c, b依赖xxx-1.0.jar, c依赖xxx-2.0.jar, 则a拥有xxx-1.0.jar, 就近原则
+			a依赖b, a依赖c, b依赖xxx-1.0.jar, c依赖xxx-2.0.jar, 则a拥有xxx-1.0.jar, 谁先声明原则
+
+	5. 仓库
+		1. 本地仓库
+
+		2. 远程仓库
+			1. 私服			（局域网Nexus，也可以外网）
+			2. 中央仓库		（外网）
+			3. 中央仓库镜像	（分担中央仓库流量，提升访问速度）
+
+		3. 仓库中保存的是Maven工程
+			1. Maven自身所需的插件
+			2. 第三方jar包
+			3. 自己开发的工程（使用 mvn install 安装到本地仓库）
+
+	6. 生命周期/插件/目标
+		1. Maven只定义了抽象的生命周期，具体实现由插件完成
+		2. 各个构建环节按顺序执行
+		3. 执行某个环节，都是从头开始执行
+		4. 进入pom.xml所在的目录执行maven命令
+			mvn clean			清理
+			mvn compile			编译主程序
+			mvn test-compile	编译测试程序
+			mvn test			测试
+			mvn package			打包
+			mvn install			安装到本地仓库
+			mvn deploy			安装到远程仓库，让其他开发人员与项目共享或部署到服务器上运行（？）
+			mvn site			生成站点
+
+			maven-resources-plugin:2.6:resources
+			maven-compiler-plugin:3.1:compile
+			maven-resources-plugin:2.6:testResources
+			maven-compiler-plugin:3.1:testCompile
+			maven-surefire-plugin:2.12.4:test
+			maven-jar-plugin:2.4:jar
+			maven-war-plugin:2.2:war
+			maven-install-plugin:2.4:install
+
+	7. 继承
+		1. 创建一个Maven工程作为父工程，打包方式为pom
+		2. 在子工程中声明对父工程的引用
+		3. 将子工程中与父工程一样的内容删除
+		4. 在父工程中统一某jar包的依赖
+		5. 在子工程中删除某jar包的版本号
+
+
+1. test 范围的依赖，只能在 src/test 里使用，在 src/main 里无法使用
+2. eclipse 的 pom.xml 下面的标签页 dependency hierarchy 可以查看 jar 包的依赖
+	idea 右键 pom.xml -> diagrams -> show dependencies 查看依赖图
+3. test 和 provided 范围的依赖不能传递
+4. 排除的依赖也能传递
+	a 模块里 spring-core 排除了 commons-logging
+	如果 b 模块依赖 a 模块，则在 b 模块里也是没有 commons-logging
+5. 相同版本依赖的选择，就近原则，一样近的，以上面的为准
+6. 父项目 install 会把子项目都 install，不用子项目一个一个 install
+7. idea 的 maven 面板里的 lifecycle 包下执行某个都会从生命周期的头开始执行，而 plugins 包下可以单独执行生命周期中的某一个环节
