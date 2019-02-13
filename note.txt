@@ -82,7 +82,7 @@
 			mvn test			测试
 			mvn package			打包
 			mvn install			安装到本地仓库
-			mvn deploy			安装到远程仓库，让其他开发人员与项目共享或部署到服务器上运行（？）
+			mvn deploy			将打包的结果部署到远程仓库或将 war 包部署到服务器上运行
 			mvn site			生成站点
 
 			maven-resources-plugin:2.6:resources
